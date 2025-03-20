@@ -17,22 +17,14 @@
 // reportWebVitals();
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import "./index.css";
 import App from "./App";
 import Login from "./LoginReg";
 import reportWebVitals from "./reportWebVitals";
 
 const AppRoutes = () => {
-  const location = useLocation();
-
-  React.useEffect(() => {
-    if (location.pathname === "/login") {
-      import("./login2.css");
-    } else {
-      import("./app2.css");
-    }
-  }, [location]);
+ 
 
   return (
     <Routes>

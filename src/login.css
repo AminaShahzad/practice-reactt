@@ -1,5 +1,8 @@
 .wrapper {
-    position: relative;
+    position: absolute; /* Change from relative to absolute */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Moves the box exactly to the center */
     width: 420px;
     height: 450px;
     background: transparent;
@@ -9,9 +12,10 @@
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     color: #fff;
     overflow: hidden;
-    transition: height 0.2s ease-in-out; /* Smooth height transition */
+    transition: height 0.2s ease-in-out;
     text-align: center;
 }
+
 .app-name {
     position: absolute;
     top: 20px;
@@ -105,3 +109,47 @@ form button {
     text-decoration: underline;
 }
 
+.remember-forgot {
+    display: flex;
+    justify-content: space-between; /* Ensures both elements are on the same line */
+    align-items: center;
+    font-size: 14px;
+    width: 100%;
+    margin-top: 10px; /* Adjust spacing */
+    padding: 0 10px; /* Add slight padding for better alignment */
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Space between checkbox & text */
+    cursor: pointer;
+}
+
+.remember-me input {
+    width: 14px;
+    height: 14px;
+    accent-color: white; /* Style checkbox color */
+}
+
+.forgot-password {
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+
+
+.terms-label {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Adds spacing between checkbox and text */
+    font-size: 14px;
+    color: white;
+    white-space: nowrap; /* Ensures text stays in one line */
+}
