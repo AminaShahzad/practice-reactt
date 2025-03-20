@@ -1,28 +1,19 @@
-/* index.css - Default global styles for React project */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
 
-* {
+*{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: Arial, sans-serif;
 }
 
 body {
-  background-color: #f5f5f5;
-  color: #333;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  text-align: center;
-  background: url('./background2.jpg')no-repeat;
-  background-size: cover;
-  background-position: center;
-}
-
-#root {
-  width: 100%;
-  max-width: 1200px;
-  margin: auto;
-  padding: 20px;
+    font-family: "Poppins", sans-serif;
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    min-height: 100vh;
+    background: url('./background2.jpg') no-repeat;
+    background-size: cover;
+    background-position: center;
+    margin: 0;
 }
