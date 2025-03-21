@@ -36,7 +36,7 @@
 .form-container {
     display: flex;
     width: 200%; /* Twice the width to hold both forms */
-    transition: transform 0.5s ease-in-out;
+    transition: transform 0.3s ease-in-out;
 }
 
 /* Shift left when register is active */
