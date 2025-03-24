@@ -1,44 +1,65 @@
-// Function to calculate telescope parameters
-const calculateParameters = () => {
-    if (!selectedTelescope || !selectedEyepiece) return;
+export const calculateParameters = (telescope, eyepiece, camera) => {
+    if (!telescope) return null;
 
-    const aperture = parseFloat(selectedTelescope.aperture);
-    const focalLength = parseFloat(selectedTelescope.focal_length);
-    const eyepieceFocalLength = parseFloat(selectedEyepiece.eyepiece_focal_length);
-    const eyepieceFoV = parseFloat(selectedEyepiece.AFOV);
+    const aperture = Number(telescope.aperture) || 1; // Prevents division by zero
+    const focalLength = Number(telescope.focal_length) || 1;
 
-    // Correct Focal Ratio calculation
-    const focalRatio = (focalLength / aperture).toFixed(2);
+    const eyepieceFocalLength = eyepiece ? Number(eyepiece.eyepiece_focal_length) || 1 : null;
+    const afov = eyepiece ? Number(eyepiece.AFOV) || 0 : null;
 
-    // Magnification
-    const magnification = (focalLength / eyepieceFocalLength).toFixed(2);
+    // Telescope Calculations
+    const magnification = eyepieceFocalLength ? focalLength / eyepieceFocalLength : 0;
+    const maxMagnification = 2 * aperture;
+    const focalRatio = focalLength / aperture;
+    const trueFoV = (magnification && afov) ? afov / magnification : 0;
+    const dawesLimit = 116 / aperture;
+    const rayleighLimit = 138 / aperture;
+    const limitingMagnitude = 7.98 + 5 * Math.log10(aperture);
+    const lightGatheringPower = (aperture / 7) ** 2;
 
-    // Maximum Magnification
-    const maxMagnification = (2.5 * aperture).toFixed(2);
+    // CCD Camera Calculations
+    let ccdResolution = 0;
+    let ccdPixelSize = 0;
+    let ccdSensorSize = 0;
+    let ccdSuitability = "N/A";
 
-    // True Field of View
-    const trueFoV = (eyepieceFoV * (eyepieceFocalLength / focalLength)).toFixed(2);
+    if (camera) {
+        const pixelSize = camera.pixel_size ? Number(camera.pixel_size) : null;
+        const resolutionPx = camera.resolution ? 
+            [Number(camera.resolution.width) || 1, Number(camera.resolution.height) || 1] 
+            : [1, 1];
+        const sensorWidth = camera.sensor_size ? Number(camera.sensor_size.width) : 1;
+        const sensorHeight = camera.sensor_size ? Number(camera.sensor_size.height) : 1;
 
-    // Dawes' Limit (Resolution Limit)
-    const dawesLimit = (116 / aperture).toFixed(2);
+        // ✅ FIX: Correcting CCD Pixel Size and Sensor Size
+        ccdPixelSize = pixelSize; // Directly use the provided pixel size (in µm)
+        ccdSensorSize = Math.sqrt(sensorWidth * sensorWidth + sensorHeight * sensorHeight); // Diagonal of the sensor
 
-    // Rayleigh Limit
-    const rayleighLimit = (138 / aperture).toFixed(2);
+        // Calculate the CCD resolution (in arcsec/pixel)
+        ccdResolution = (pixelSize * 206.265) / focalLength;
 
-    // Limiting Magnitude
-    const limitingMagnitude = (7.7 + (5 * Math.log10(aperture / 10))).toFixed(2);
+        // Suitability Conditions
+        if (ccdResolution > 2) {
+            ccdSuitability = "Under-sampling (Resolution too high)";
+        } else if (ccdResolution < 0.67) {
+            ccdSuitability = "Over-sampling (Resolution too low)";
+        } else {
+            ccdSuitability = "Optimal (Good resolution)";
+        }
+    }
 
-    // Light Gathering Power
-    const lightGatheringPower = ((aperture ** 2) / (7 ** 2)).toFixed(2);
-
-    setCalculatedValues({
-        focalRatio,  // Ensuring proper display format
+    return {
         magnification,
         maxMagnification,
+        focalRatio,
         trueFoV,
         dawesLimit,
         rayleighLimit,
         limitingMagnitude,
-        lightGatheringPower
-    });
-}
+        lightGatheringPower,
+        ccdResolution,
+        ccdPixelSize,
+        ccdSensorSize,
+        ccdSuitability
+    };
+};
