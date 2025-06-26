@@ -1,53 +1,248 @@
+/* General Styles */
+
+/* Navbar */
+.navbar {
+  width: 230px;
+  height: 100vh;
+  background: linear-gradient(135deg, #242a42, #1a1f38);
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 2px 0px 10px rgba(255, 255, 255, 0.1);
+}
+
+.navbar button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 15px;
+  width: 90%;
+  text-align: left;
+  font-weight: bold;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+.navbar button:hover {
+  background: #374785;
+  color: #ffcc00;
+  transform: scale(1.1);
+}
+
+
+.main-layout {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    padding-left: 90px;
+    
+}
+
+/* Config Panel */
+.config-panel {
+  width: 610px; /* Increase width for a better layout */
+  min-height: 450px; /* Allow height to adjust dynamically */
+ /* background: rgb(24, 1, 89);*/
+ background: black;
+  border-radius: 15px;
+  box-shadow: 0px 8px 20px rgba(255, 255, 255, 0.1);
+  padding: 30px; /* Increase padding for better spacing */
+  display: flex;
+  flex-direction: column;
+  justify-content: start; /* Centers content */
+  align-items: left; /* Centers content */
+  color: rgb(239, 240, 241);
+  animation: slideIn 0.5s ease-in-out;
+  margin: 70px auto; /* Center the panel */
+  position: relative;
+  
+}
+
+.config-panel .main-config {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+/* Back Button aligned to the top-left */
+.config-panel .main-config .back-button {
+  align-self: flex-start;
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-top: -2px; /* Adjust vertical space */
+}
+.config-panel .main-config h2 {
+  font-size: 26px;
+  font-weight: bold;
+  text-align: left;
+  color: white;
+  -webkit-text-stroke: 1px rgb(3, 15, 19);
+}
+
+.config-panel .Selection .back-button {
+
+  font-size: 24px;
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin: 1px/* Adjust vertical space */
+}
+
+.config-panel button {
+  width: 550px;
+  height: 150px;
+  background: transparent;
+  color: rgb(243, 246, 247);
+  text-align: left;
+  border: none;
+  font-size: 30px;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* Push text to left, image to right */
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.3s ease-in-out;
+  margin-top: 40px;
+}
+.config-panel .button-text {
+  flex: 1; /* Text takes available space */
+  text-align: left;
+}
+
+.config-panel .button-image {
+  width: 50%; /* Covers right half of button */
+  height: 100%;
+  object-fit: cover;
+}
+
+  
+
+
+.config-panel button:hover {
+  background:transparent; /* Blue background on hover */
+  color: white; /* White text on hover */
+  transform: scale(1.17);
+}
+
+.config-panel input {
+  width: 100%; /* Full width */
+  height: 30px; /* Adjust height */
+  border: 2px solid #007bff; /* Blue border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 10px; /* Inner spacing */
+  font-size: 16px; /* Readable text */
+  color: #333; /* Dark text */
+  background-color: white; /* White background */
+  outline: none; /* Remove focus outline */
+
+}
+
+.config-panel input:focus {
+  border-color: #0056b3; /* Darker blue on focus */
+  box-shadow: 0 0 8px rgba(0, 91, 255, 0.5); /* Glow effect */
+}
 
 
 
-/* Selection Fields */
 label {
   font-weight: bold;
+  margin-bottom: 0px;
   display: block;
-  margin-bottom: 5px;
 }
 
 .search-bar {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   background: rgba(255, 255, 255, 0.1);
-  border: none;
-  border-radius: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
   color: white;
   font-size: 16px;
+  transition: all 0.3s ease-in-out;
 }
 
 .search-bar:focus {
   outline: none;
-  background: rgba(255, 255, 255, 0.001);
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #ffcc00;
 }
 
 /* Error Message */
 .error {
-  color: red;
-  text-align: center;
-  margin-top: 10px;
+  color: rgb(255, 85, 85);
+  height: 20px;
+  font-weight: bold;
 }
 
-/* Selection Result */
-.selected {
-  font-weight: bold;
-  margin-top: 10px;
-  text-align: center;
+/* Buttons */
+.config-panel .enter-button {
+  width: 20%;
+  height: 50px;
+  background-color: #4c53af;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: normal;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  margin-top: 15px;
+}
+
+.config-panel .enter-button:hover {
+  background-color:  #45a049;
+  transform: scale(1.05);
+}
+.config-panel p{
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    text-align: center; /* Center text */
+    margin-top: 150px;
+
+}
+
+/* Animations */
+
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .navbar {
+    width: 100%;
+    height: auto;
+    flex-direction: row;
+    justify-content: space-around;
+    padding: 10px 0;
+  }
+
   .config-panel {
     width: 80%;
   }
-}
-
-.app {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  padding: 20px;
 }
 .header {
   text-align: center; 
@@ -63,95 +258,9 @@ label {
   background: rgba(53, 54, 55, 0.262); /* Optional: Set a background */
   z-index: 1000; /* Ensure it stays on top */
   padding: 10px 0; /* Adjust padding if needed */
-  color:rgb(233, 71, 71);
+  color: #ffcc00;;
+  -webkit-text-stroke: 3px black;
 }
-
-
-.navbar {
-  width: 200px;
-  height: 100vh; /* Full height */
-  background: rgba(0, 0, 50, 0.9); /* Dark background */
-  padding: 20px 10px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: center;
-  position: fixed;
-  left: 0;
-  top: 0;
-  z-index: 1000;
-}
-
-.navbar button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 16px;
-  cursor: pointer;
-  padding: 15px;
-  width: 100%;
-  text-align: left;
-}
-
-.navbar button:hover {
-  color: #ffcc00; /* Highlight color */
-}
-
-/* Adjust Dashboard to Avoid Overlap */
-.dashboard {
-  margin-left: 220px; /* Push content right to avoid overlap */
-  padding: 20px;
-}
-
-/* Config Panel Position */
-.config-panel {
-  width: 40%;
-  padding: 20px;
-  background: rgba(48, 48, 94, 0.9);
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
-  display: flex;
-  flex-direction: column;
-  margin-left: 50px; /* Shift right to avoid navbar */
-  color: white;
-}
-.config-panel h2 {
-  margin-bottom: 20px;
-  font-size: 22px;
-  font-weight: bold;
-}
-input, select {
-  width: 100%;
-  padding: 8px;
-  margin: 10px 0;
-  border: 2px solid #ccc; /* Optional: Adds a border */
-  border-radius: 30px; /* Makes the edges rounded */
-  outline: none; /* Removes default focus outline */
-  transition: border-color 0.3s ease-in-out;
-}
-
-input:focus, select:focus {
-  border-color: #007bff; /* Changes border color when focused */
-}
-
-.enter-button {
-  width: 40%;  /* Reduce the width */
-  height: 45px; /* Increase the height */
-  padding: 10px;
-  background-color: #62a3e9; /* Blue background */
-  color: white;
-  border: none;
-  border-radius: 10px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background 0.3s ease-in-out;
-  align-self: center;
-}
-
-.enter-button:hover {
-  background-color: #0d5aab; /* Darker blue on hover */
-}
-
 @keyframes slideIn {
   0% { transform: translateX(-100vw); opacity: 0; } 
   100% { transform: translateX(0); opacity: 1; } 
@@ -162,6 +271,292 @@ input:focus, select:focus {
   animation: slideIn 3s ease-in-out;
 }
 
-/* index.css - Default global styles for React project */
+/* EyepieceSelection.css */
 
 
+
+
+/* Dropdown Animation */
+.dropdown-container {
+    transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+}
+
+.slide-in {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.slide-out {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+/* Custom Styling for Select Dropdown */
+.select-container {
+    background-color: black;
+    border: 1px solid white;
+    color: white;
+}
+
+.select-container .select__control {
+    background-color: black !important;
+    border: 1px solid white !important;
+    box-shadow: none !important;
+}
+
+.select-container .select__menu {
+    background-color: black !important;
+    border: 1px solid gray !important;
+}
+
+.select-container .select__option {
+    background-color: black !important;
+    color: white !important;
+    border-bottom: 1px solid white;
+    padding: 10px;
+}
+
+.select-container .select__option--is-focused {
+    background-color: gray !important;
+}
+/* Back Button Styling */
+.config-panel .back-button {
+  background: transparent;
+  color: #e6e7ea;
+  border: transparent;
+  font-size: 14px;
+width: 10%;
+height: 20px;
+  border-radius: 10px;
+  display: flex;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  position: absolute;
+    top: 3px;  /* Adjust vertical position */
+    left: 10px;
+}
+
+.config-panel .back-button svg {
+  font-size: 20px; /* Adjust arrow icon size */
+  transition: transform 0.3s ease-in-out;
+}
+
+.config-panel .back-button:hover {
+  background:transparent;
+  color: white;
+}
+
+.config-panel .back-button:hover svg {
+  transform: translateX(-5px); /* Move arrow slightly left on hover */
+}
+
+/* Eyepiece Section */
+.config-panel.Selection {
+  background: black; /* Keep the background same */
+  width: 100%; /* Ensure it fits inside the parent */
+  min-height: 200px; /* Adjust height as needed */
+  border-radius: 10px;
+  padding: 20px; /* Spacing inside */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Adjusted alignment */
+  align-items: center;
+  position: static; /* Override absolute positioning from parent */
+
+}
+
+.config-panel .Selection label {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 10px;
+  text-align: left; /* Align labels properly */
+  width: 100%;
+  margin-top: 50px; 
+}
+
+.config-panel .Selection select, 
+.config-panel .Selection input {
+  width: 90%; /* Adjust width */
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  outline: none;
+  font-size: 14px;
+  margin-bottom: 15px;
+  margin-top: 30px; 
+}
+
+
+.equipment-details {
+  
+  background: rgb(7, 1, 1); /* Semi-transparent dark background */
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  margin: 20px auto;
+  margin-top: 70px;
+  text-align: left;
+   height: 450px; /* Fixed height */
+  overflow-y: auto;
+}
+
+/* Equipment sections */
+.equipment-box {
+  
+  background: rgba(255, 255, 255, 0.2); /* Light semi-transparent background */
+  padding: 9px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+/* Headings */
+h3, h4 {
+  color: #ffcc00; /* Gold color for headings */
+  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.7);
+  font-size: 14px;
+}
+
+/* Text styling */
+p {
+  font-size: 16px;
+  line-height: 1.5;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+/* Telescope values */
+.telescope-value {
+  color: #00ffff; /* Cyan */
+  font-weight: 500;
+}
+
+/* Eyepiece values */
+.eyepiece-value {
+  color: #66ff66; /* Light green */
+  font-weight: 500;
+}
+
+/* Camera values */
+.camera-value {
+  color: #ff9966; /* Orange */
+  font-weight: 500;
+}
+
+
+/* Strong text */
+strong {
+  color: #ffffff;
+}
+
+/* Button styling */
+
+
+
+/* Styling for the calculated parameters section */
+.calculated-parameters {
+  background: rgba(63, 62, 62, 0.6); /* Dark semi-transparent background */
+  padding: 5px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* Ensuring the calculated values are visible */
+.calculated-parameters p {
+  color: #ffcc00; /* Bright gold color for visibility */
+  font-size: 14px;
+  font-weight: normal;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+.calculate-button {
+  background-color: #4c53af; /* Green background */
+  color: white; /* White text color */
+  border: none; /* No border */
+  padding: 10px 20px; /* Padding for size */
+  font-size: 16px; /* Font size */
+  cursor: pointer; /* Change cursor to pointer */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s ease; /* Smooth transition on hover */
+}
+
+.calculate-button:hover {
+  background-color: #45a049; /* Darker green when hovered */
+}
+
+.dropdown {
+  position: relative; /* Ensure it's positioned correctly */
+  z-index: 10; /* Higher than background */
+  background-color: white; /* Make text readable */
+}
+
+.dropdown-container {
+  margin-top: 20px; /* Adjust as needed */
+  padding: 10px;
+}
+
+.background-image {
+  max-height: 300px; /* Adjust height */
+  object-fit: cover; /* Crop instead of stretching */
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center dropdown */
+  justify-content: center;
+}
+
+.choose-celestial-button,
+.simulate-button {
+  background-color: #1e1e2f;
+  color: #f5f5f5;
+  border: 2px solid #4a90e2;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 10px 5px;
+  transition: all 0.3s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.choose-celestial-button:hover,
+.simulate-button:hover {
+  background-color: #4a90e2;
+  color: white;
+  transform: scale(1.05);
+  box-shadow: 0 4px 10px rgba(74, 144, 226, 0.4);
+}
+.simulation-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 40px;
+  width: 100%;
+}
+
+.celestial-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 30px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.simulation-container {
+  margin-left: 100px; /* Adjust this value as needed */
+  max-width: 950px;
+  background: black;
+  padding: 30px;
+  border-radius: 20px;
+  color: white;
+}
+
+
+/* Optional: style the Select box if needed */
+.select-dropdown {
+  width: 300px;
+}

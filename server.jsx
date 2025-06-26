@@ -33,7 +33,7 @@ connectDB();
 const db = client.db("virtual_telescope");
 const telescopesCollection = db.collection("telescopes");
 const eyepiecesCollection = db.collection("Eyepieces");
-
+const cameraCollection = db.collection("camera");
 
 // Route to fetch telescopes
 app.get("/telescopes", async (req, res) => {
@@ -54,6 +54,15 @@ app.get("/eyepieces", async (req, res) => {
         console.log(Eyepieces)
     } catch (err) {
         res.status(500).json({ error: "Error fetching eyepieces" });
+    }
+});
+app.get("/cameras", async (req, res) => {
+    try {
+        const cameras = await cameraCollection.find({}).toArray();
+        res.json(cameras);
+        console.log(cameras)
+    } catch (err) {
+        res.status(500).json({ error: "Error fetching Cameras" });
     }
 });
 

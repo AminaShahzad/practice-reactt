@@ -1,0 +1,65 @@
+.simulator-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 30px;
+    margin-top: 40px;
+    background-color: #000; /* Dark sky background */
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+    color: white;
+  }
+  
+  .simulator-wrapper h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #ffcc00;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+  }
+  
+  .planet-view {
+    position: relative;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle at center, #222 0%, #000 100%);
+    border: 2px solid #555;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }
+  
+  .planet-image {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .simulator-wrapper p {
+    font-size: 16px;
+    margin: 5px 0;
+    color: #ccc;
+  }
+  
+  @media (max-width: 600px) {
+    .planet-view {
+      width: 90vw;
+      height: 90vw;
+    }
+  
+   .planet-image {
+  /* Remove width, height, max-width, max-height */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+  transition: transform 0.3s ease-in-out;
+}
+  }
+  

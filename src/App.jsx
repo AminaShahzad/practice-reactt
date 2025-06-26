@@ -1,175 +1,340 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { FaArrowLeft } from "react-icons/fa";
 import axios from "axios";
 import Select from "react-select";
 import "./App.css";
+import visual from "./vis.jpg";
+import image from "./imag.jpg";
+import { calculateParameters } from "./calculation"; // Import function
+import Simulator from "./simulator.jsx";
 
 const App = () => {
     const [telescopes, setTelescopes] = useState([]);
     const [eyepieces, setEyepieces] = useState([]);
+    const [cameras, setCameras] = useState([]);
     const [selectedTelescope, setSelectedTelescope] = useState(null);
     const [selectedEyepiece, setSelectedEyepiece] = useState(null);
+    const [selectedCamera, setSelectedCamera] = useState(null);
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
-    const [activePanel, setActivePanel] = useState(""); // Tracks which panel to show
-    const [location, setLocation] = useState({ name: "", latitude: "", longitude: "" });
-    const [dateTime, setDateTime] = useState({ date: "", time: "" });
+    const [activePanel, setActivePanel] = useState("");
+    const [configType, setConfigType] = useState(null);
     const [isSliding, setIsSliding] = useState(true);
+    const [showDetails, setShowDetails] = useState(false);
+    const [calculatedValues, setCalculatedValues] = useState(null);
+    const [imageUrl, setImageUrl] = useState(null);
+    const [showCelestialSelection, setShowCelestialSelection] = useState(false);
+    const [selectedCelestial, setSelectedCelestial] = useState(null);
+    const [simulate, setSimulate] = useState(false);
+    const [showSimulator, setShowSimulator] = useState(false);
+    const [latestImage, setLatestImage] = useState(null);
 
-    // Fetch telescopes and eyepieces
+
+
+    // Fetch data for telescopes, eyepieces, and cameras
     const fetchData = useCallback(async () => {
-        if (telescopes.length && eyepieces.length) return;
         setLoading(true);
         setError("");
 
         try {
-            const [telescopesRes, eyepiecesRes] = await Promise.all([
+            const [telescopesRes, eyepiecesRes, camerasRes] = await Promise.all([
                 axios.get("http://localhost:5000/telescopes"),
                 axios.get("http://localhost:5000/eyepieces"),
+                axios.get("http://localhost:5000/cameras"),
             ]);
 
             setTelescopes(telescopesRes.data || []);
             setEyepieces(eyepiecesRes.data || []);
+            setCameras(camerasRes.data || []);
         } catch (err) {
             setError("Error fetching data. Check your API.");
         } finally {
             setLoading(false);
         }
-    }, [telescopes, eyepieces]);
+    }, []);
 
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
-
     useEffect(() => {
-        setTimeout(() => setIsSliding(false), 3000); // Stop animation after 3 seconds
-    }, []); // Runs only once on mount
+        setTimeout(() => setIsSliding(false), 3000);
+    }, []);
+    
+    useEffect(() => {
+        console.log("Fetched Cameras:", cameras);
+    }, [cameras]); // ✅ Correct closing structure
+    
+   
 
-
-    // Submit Configuration and Hide Panel
-    const handleConfigureSubmit = () => {
-        if (!selectedTelescope || !selectedEyepiece) {
-            setError("Please select both a telescope and an eyepiece.");
-            return;}    
-        console.log("Configuration Saved:", { selectedTelescope, selectedEyepiece });
-        setActivePanel(""); // Hide config panel
+    
+    const handleBack = () => {
+        setError(""); // Clear errors when going back
+        if (configType) {
+            setConfigType(null);
+            setSelectedTelescope(null);
+            setSelectedEyepiece(null);
+            setSelectedCamera(null);
+            setShowDetails(false);
+            setCalculatedValues(false);
+        } else {
+            setActivePanel("");
+        }
     };
 
-    // Submit Location
-    const handleLocationSubmit = () => {
-        if (!location.name || !location.latitude || !location.longitude) {
-            setError("Please fill in all location fields.");
+    // Handle Configuration Submission
+    const handleConfigSubmit = () => {
+        setError(""); // Clear previous error before validation
+
+        if (!selectedTelescope) {
+            setError("Please select a telescope.");
             return;
         }
-        console.log("Location Saved:", location);
-        setActivePanel(""); // Hide location panel
+
+        if (configType === "Eyepiece" && !selectedEyepiece) {
+            setError("Please select an eyepiece.");
+            return;
+        }
+
+        if (configType === "Camera" && !selectedCamera) {
+            setError("Please select a camera.");
+            return;
+        }
+        console.log("Selected Camera:", selectedCamera); // Check in the console
+        console.log("Configuration Saved:", { selectedTelescope, configType, selectedEyepiece, selectedCamera });
+
+        setShowDetails(true);
+        setActivePanel("");
     };
 
-    // Submit Date & Time
-    const handleDateTimeSubmit = () => {
-        if (!dateTime.date || !dateTime.time) {
-            setError("Please select both date and time.");
-            return;
-        }
-        console.log("Date & Time Saved:", dateTime);
-        setActivePanel(""); // Hide date/time panel
+    // Custom styles for search bars
+    const customStyles = {
+        control: (provided) => ({
+            ...provided,
+            backgroundColor: "black",
+            color: "white",
+            border: "1px solid white",
+            boxShadow: "none",
+            "&:hover": { borderColor: "gray" },
+        }),
+        menu: (provided) => ({
+            ...provided,
+            backgroundColor: "black",
+            border: "1px solid gray",
+        }),
+        option: (provided, state) => ({
+            ...provided,
+            backgroundColor: state.isFocused ? "gray" : "black",
+            color: "white",
+            borderBottom: "1px solid white",
+            padding: 10,
+        }),
+        singleValue: (provided) => ({
+            ...provided,
+            color: "white",
+        }),
+        placeholder: (provided) => ({
+            ...provided,
+            color: "gray",
+        }),
     };
 
     return (
         <div className="app">
-            {/* Navbar */}
-            <nav className="navbar">
-                <button onClick={() => setActivePanel("location")}>Graphical Location</button>
-                <button onClick={() => setActivePanel("config")}>Configuration</button>
-                <button onClick={() => setActivePanel("datetime")}>Date & Time</button>
-                <button onClick={() => setActivePanel("learnmore")}>Learn More</button>
-            </nav>
             <header className={`header ${isSliding ? "slide" : ""}`}>
                 <h1>TELESCOPIC VIEWS LIVE!</h1>
             </header>
-
+    
+            {/* Navbar */}
+            <nav className="navbar">
+                <button onClick={() => setActivePanel("config")}>Configuration</button>
+                <button onClick={() => setActivePanel("learnmore")}>Learn More</button>
+            </nav>
+    
             {/* Configuration Panel */}
-            {activePanel === "config" && (
+            <div className="main-layout">
                 <div className="config-panel">
-                    <h2>Configure Telescope & Eyepiece</h2>
-
-                    <label>Select Telescope:</label>
-                    <Select
-                        options={telescopes.map(t => ({ value: t.tel_name, label: t.tel_name }))}
-                        onChange={setSelectedTelescope}
-                        isLoading={loading}
-                        placeholder="Search telescope..."
-                        className="search-bar"
-                        styles={{
-                            option: (provided, state) => ({
-                                ...provided,
-                                color: state.isFocused ? "white" : "rgba(0, 0, 0, 0.7)",
-                                borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
-                            }),
-                        }}
-                    />
-
-                    <label>Select Eyepiece:</label>
-                    <Select
-                        options={eyepieces.map(e => ({ value: e.focal_length, label: `${e.focal_length}mm` }))}
-                        onChange={setSelectedEyepiece}
-                        isLoading={loading}
-                        placeholder="Search eyepiece..."
-                        className="search-bar"
-                        styles={{
-                            option: (provided, state) => ({
-                                ...provided,
-                                color: state.isFocused ? "white" : "rgba(0, 0, 0, 0.7)",
-                                borderBottom: "1px solid rgba(0, 0, 0, 0.2)",
-                            }),
-                        }}
-                    />
-
-                    {error && <p className="error">{error}</p>}
-                    <button className="enter-button" onClick={handleConfigureSubmit}>Enter</button>
+                    {!configType ? (
+                        <div className="main-config">
+                            <button className="back-button" onClick={handleBack}>
+                                <FaArrowLeft />
+                            </button>
+                            <h2>Make your choice</h2>
+    
+                            <button onClick={() => setConfigType("Eyepiece")} className="config-button">
+                                <span className="button-text">Virtualizing &rarr;</span>
+                                <img src={visual} alt="Eyepiece" className="button-image" />
+                            </button>
+                            <button onClick={() => setConfigType("Camera")} className="config-button">
+                                <span className="button-text">Imaging &rarr;</span>
+                                <img src={image} alt="Camera" className="button-image" />
+                            </button>
+                        </div>
+                    ) : (
+                        <div className="Selection">
+                            <button className="back-button" onClick={handleBack}>
+                                <FaArrowLeft />
+                            </button>
+                            <h2>Configure {configType}</h2>
+    
+                            <label>Select Telescope:</label>
+                            <Select
+                                options={telescopes.map(t => ({ value: t.telescope_name, label: t.telescope_name }))}
+                                onChange={(option) => {setSelectedTelescope(telescopes.find(t => t.telescope_name === option.value));
+                                    setShowDetails(false);
+                                    setCalculatedValues(false);
+                                }}
+                                isLoading={loading}
+                                placeholder="Search telescope..."
+                                styles={customStyles}
+                            />
+    
+                            {configType === "Eyepiece" && (
+                                <>
+                                    <label>Select Eyepiece:</label>
+                                    <Select
+                                        options={eyepieces.map(e => ({ value: e.eyepiece_name, label: `${e.eyepiece_name}mm` }))}
+                                        onChange={(option) => {setSelectedEyepiece(eyepieces.find(e => e.eyepiece_name === option.value));setShowDetails(false);
+                                    setCalculatedValues(false);}}
+                                        isLoading={loading}
+                                        placeholder="Search eyepiece..."
+                                        styles={customStyles}
+                                    />
+                                </>
+                            )}
+    
+                            {configType === "Camera" && (
+                                <div>
+                                    <label>Select Camera:</label>
+                                    <Select
+                                        options={cameras.map(c => ({ value: c.camera_name, label: c.camera_name }))}
+                                        onChange={(option) => {setSelectedCamera(cameras.find(c => c.camera_name === option.value));setShowDetails(false);
+                                    setCalculatedValues(false);}}
+                                        isLoading={loading}
+                                        placeholder="Search camera..."
+                                        styles={customStyles}
+                                    />
+                                </div>
+                            )}
+    
+                            {error && <p className="error">{error}</p>}
+                            <button className="enter-button" onClick={handleConfigSubmit}>Enter</button>
+                        </div>
+                    )}
                 </div>
-            )}
+            
+    
+            {showDetails && (
+    <div className="equipment-details ">
+        <h3>Selected Equipment Details</h3>
 
-            {/* Location Panel */}
-            {activePanel === "location" && (
-                <div className="config-panel">
-                    <h2>Set Graphical Location</h2>
-                    <label>Location Name:</label>
-                    <input type="text" value={location.name} onChange={(e) => setLocation({ ...location, name: e.target.value })} />
-                    
-                    <label>Latitude:</label>
-                    <input type="text" value={location.latitude} onChange={(e) => setLocation({ ...location, latitude: e.target.value })} />
+        {selectedTelescope && (
+            <div className="equipment-box">
+                <h4>Telescope: {selectedTelescope.telescope_name}</h4>
+                <p><strong>Aperture:</strong> <span className="telescope-value">{selectedTelescope.aperture} mm</span></p>
+                <p><strong>Focal Length:</strong> <span className="telescope-value">{selectedTelescope.focal_length} mm</span></p>
+            </div>
+        )}
 
-                    <label>Longitude:</label>
-                    <input type="text" value={location.longitude} onChange={(e) => setLocation({ ...location, longitude: e.target.value })} />
+        {configType === "Eyepiece" && selectedEyepiece && (
+            <div className="equipment-box">
+                <h4>Eyepiece: {selectedEyepiece.eyepiece_name}</h4>
+                <p><strong>Focal Length:</strong> <span className="eyepiece-value">{selectedEyepiece.eyepiece_focal_length} mm</span></p>
+                <p><strong>Field of View:</strong> <span className="eyepiece-value">{selectedEyepiece.AFOV}°</span></p>
+            </div>
+        )}
 
-                    <button  className="enter-button" onClick={handleLocationSubmit}>Enter</button>
-                </div>
-            )}
+        {configType === "Camera" && selectedCamera && (
+            <div className="equipment-box">
+                <h4>Camera: {selectedCamera.camera_name}</h4>
+                <p><strong>Pixel Size:</strong> <span className="camera-value">{selectedCamera.pixel_size} µm</span></p>
+                <p><strong>Resolution:</strong> <span className="camera-value">{selectedCamera.resolution.width} x {selectedCamera.resolution.height} pixels</span></p>
+                <p><strong>Sensor Size:</strong> <span className="camera-value">{selectedCamera.sensor_size.width} x {selectedCamera.sensor_size.height} mm</span></p>
+            </div>
+        )}
 
-            {/* Date & Time Panel */}
-            {activePanel === "datetime" && (
-                <div className="config-panel">
-                    <h2>Set Date & Time</h2>
-                    <label>Date:</label>
-                    <input type="date" value={dateTime.date} onChange={(e) => setDateTime({ ...dateTime, date: e.target.value })} />
+        <button
+            onClick={() => {
+                console.log("⚡ Button Clicked! Starting Calculation...");
+                setCalculatedValues(calculateParameters(selectedTelescope, selectedEyepiece, selectedCamera));
+            }}
+            className="calculate-button"
+        >
+            Calculate Parameters
+        </button>
 
-                    <label>Time:</label>
-                    <input type="time" value={dateTime.time} onChange={(e) => setDateTime({ ...dateTime, time: e.target.value })} />
+        {calculatedValues && (
+            <div className="calculated-parameters">
+                <h3>Calculated Parameters</h3>
+                {selectedEyepiece && (
+                    <>
+                        <p><strong>Magnification:</strong> {calculatedValues.magnification?.toFixed(2)}x</p>
+                        <p><strong>Max Magnification:</strong> {calculatedValues.maxMagnification?.toFixed(2)}x</p>
+                        <p><strong>Focal Ratio:</strong> {calculatedValues.focalRatio?.toFixed(2)}</p>
+                        <p><strong>True FoV:</strong> {calculatedValues.trueFoV?.toFixed(2)}°</p>
+                        <p><strong>Dawes' Limit:</strong> {calculatedValues.dawesLimit?.toFixed(2)} arcsec</p>
+                    </>
+                )}
+                {selectedCamera && (
+                    <>
+                        <p><strong>CCD Resolution:</strong> {calculatedValues.ccdResolution?.toFixed(2)} arcsec/pixel</p>
+                        <p><strong>CCD Pixel Size:</strong> {calculatedValues.ccdPixelSize?.toFixed(2)} µm</p>
+                        <p><strong>CCD Sensor Size:</strong> {calculatedValues.ccdSensorSize?.toFixed(2)} mm</p>
+                        <p><strong>CCD Suitability:</strong> {calculatedValues.ccdSuitability}</p>
+                    </>
+                )}
+            </div>
+        )}
+    </div>
+    
+)}
+</div>      
+    {calculatedValues && (
+        <div className="simulation-section">
+          <div className="celestial-container">
+            <label className="choose-celestial-button">
+              Choose Celestial Body
+            </label>
 
-                    <button  className="enter-button" onClick={handleDateTimeSubmit}>Enter</button>
-                </div>
-            )}
+            <Select
+              options={[
+                { value: "mercury", label: "Mercury" },
+                { value: "venus", label: "Venus" },
+                { value: "moon", label: "Moon" },
+                { value: "mars", label: "Mars" },
+                { value: "jupiter", label: "Jupiter" },
+                { value: "saturn", label: "Saturn" },
+                { value: "uranus", label: "Uranus" },
+                { value: "neptune", label: "Neptune" },
+                { value: "sun", label: "Sun" }
+              ]}
+              onChange={(option) => setSelectedCelestial(option.value)}
+              className="select-dropdown"
+            />
 
-            {/* Learn More Panel (Empty for now) */}
-            {activePanel === "learnmore" && (
-                <div className="config-panel">
-                    <h2>Learn More</h2>
-                    <p>Coming soon...</p>
-                </div>
-            )}
+            <button
+              className="simulate-button"
+              onClick={() => selectedCelestial && setSimulate(true)}
+            >
+              Simulate
+            </button>
+          </div>
+
+          {simulate && (
+            <div className="simulation-container">
+              <Simulator
+                telescope={selectedTelescope}
+                eyepiece={selectedEyepiece}
+                camera={selectedCamera}
+                celestialBody={selectedCelestial}
+              />
+            </div>
+          )}
         </div>
-    );
-};
+      )}
+    </div>
+  );
+}
 
 export default App;
