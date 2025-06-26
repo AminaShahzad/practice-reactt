@@ -8,6 +8,7 @@ import image from "./imag.jpg";
 import { calculateParameters } from "./calculation"; // Import function
 import Simulator from "./simulator.jsx";
 
+
 const App = () => {
     const [telescopes, setTelescopes] = useState([]);
     const [eyepieces, setEyepieces] = useState([]);
@@ -143,12 +144,12 @@ const App = () => {
     return (
         <div className="app">
             <header className={`header ${isSliding ? "slide" : ""}`}>
-                <h1>TELESCOPIC VIEWS LIVE!</h1>
+                <h1>Real-Time Celestial Viewing</h1>
             </header>
     
             {/* Navbar */}
             <nav className="navbar">
-                <button onClick={() => setActivePanel("config")}>Configuration</button>
+                <button onClick={() => {setActivePanel("config"); handleBack();}}>Configuration</button>
                 <button onClick={() => setActivePanel("learnmore")}>Learn More</button>
             </nav>
     
@@ -157,9 +158,7 @@ const App = () => {
                 <div className="config-panel">
                     {!configType ? (
                         <div className="main-config">
-                            <button className="back-button" onClick={handleBack}>
-                                <FaArrowLeft />
-                            </button>
+                          
                             <h2>Make your choice</h2>
     
                             <button onClick={() => setConfigType("Eyepiece")} className="config-button">
@@ -194,7 +193,7 @@ const App = () => {
                                 <>
                                     <label>Select Eyepiece:</label>
                                     <Select
-                                        options={eyepieces.map(e => ({ value: e.eyepiece_name, label: `${e.eyepiece_name}mm` }))}
+                                        options={eyepieces.map(e => ({ value: e.eyepiece_name, label: `${e.eyepiece_name}` }))}
                                         onChange={(option) => {setSelectedEyepiece(eyepieces.find(e => e.eyepiece_name === option.value));setShowDetails(false);
                                     setCalculatedValues(false);}}
                                         isLoading={loading}
@@ -232,15 +231,15 @@ const App = () => {
         {selectedTelescope && (
             <div className="equipment-box">
                 <h4>Telescope: {selectedTelescope.telescope_name}</h4>
-                <p><strong>Aperture:</strong> <span className="telescope-value">{selectedTelescope.aperture} mm</span></p>
-                <p><strong>Focal Length:</strong> <span className="telescope-value">{selectedTelescope.focal_length} mm</span></p>
+                <p><strong>Aperture:</strong> <span className="telescope-value">{selectedTelescope.aperture} </span></p>
+                <p><strong>Focal Length:</strong> <span className="telescope-value">{selectedTelescope.focal_length} </span></p>
             </div>
         )}
 
         {configType === "Eyepiece" && selectedEyepiece && (
             <div className="equipment-box">
                 <h4>Eyepiece: {selectedEyepiece.eyepiece_name}</h4>
-                <p><strong>Focal Length:</strong> <span className="eyepiece-value">{selectedEyepiece.eyepiece_focal_length} mm</span></p>
+                <p><strong>Focal Length:</strong> <span className="eyepiece-value">{selectedEyepiece.eyepiece_focal_length} </span></p>
                 <p><strong>Field of View:</strong> <span className="eyepiece-value">{selectedEyepiece.AFOV}°</span></p>
             </div>
         )}
@@ -293,9 +292,8 @@ const App = () => {
     {calculatedValues && (
         <div className="simulation-section">
           <div className="celestial-container">
-            <label className="choose-celestial-button">
-              Choose Celestial Body
-            </label>
+            <p className="choose-celestial-label">Choose Celestial Body</p>
+
 
             <Select
               options={[
@@ -310,6 +308,7 @@ const App = () => {
                 { value: "sun", label: "Sun" }
               ]}
               onChange={(option) => setSelectedCelestial(option.value)}
+              styles={customStyles}
               className="select-dropdown"
             />
 
