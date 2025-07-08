@@ -6,6 +6,8 @@ import "./index.css";
 import App from "./App";
 import Login from "./LoginReg";
 import reportWebVitals from "./reportWebVitals";
+import LearnMorePage from "./LearnMorePage.jsx";
+
 
 
 const AppRoutes = () => {
@@ -16,6 +18,7 @@ const AppRoutes = () => {
       <Route path="/" element={<Navigate to="/login" />} />
       <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={<App />} />
+      <Route path="/learnmore" element={<LearnMorePage />} />
       
     </Routes>
   );
