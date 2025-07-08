@@ -7,6 +7,7 @@ import visual from "./vis.jpg";
 import image from "./imag.jpg";
 import { calculateParameters } from "./calculation"; // Import function
 import Simulator from "./simulator.jsx";
+import { useNavigate } from "react-router-dom";
 
 
 const App = () => {
@@ -24,12 +25,11 @@ const App = () => {
     const [isSliding, setIsSliding] = useState(true);
     const [showDetails, setShowDetails] = useState(false);
     const [calculatedValues, setCalculatedValues] = useState(null);
-    const [imageUrl, setImageUrl] = useState(null);
-    const [showCelestialSelection, setShowCelestialSelection] = useState(false);
+    
+
     const [selectedCelestial, setSelectedCelestial] = useState(null);
     const [simulate, setSimulate] = useState(false);
-    const [showSimulator, setShowSimulator] = useState(false);
-    const [latestImage, setLatestImage] = useState(null);
+
 
 
 
@@ -69,7 +69,11 @@ const App = () => {
     
    
 
-    
+    const handleLearnMoreClick = () => {
+    navigate("/learnmore");
+  };
+    const navigate = useNavigate();
+
     const handleBack = () => {
         setError(""); // Clear errors when going back
         if (configType) {
@@ -150,7 +154,7 @@ const App = () => {
             {/* Navbar */}
             <nav className="navbar">
                 <button onClick={() => {setActivePanel("config"); handleBack();}}>Configuration</button>
-                <button onClick={() => setActivePanel("learnmore")}>Learn More</button>
+                <button onClick={() => {setActivePanel("learnmore");handleLearnMoreClick();}}>Learn More</button>
             </nav>
     
             {/* Configuration Panel */}
