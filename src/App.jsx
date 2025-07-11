@@ -25,6 +25,8 @@ const App = () => {
     const [isSliding, setIsSliding] = useState(true);
     const [showDetails, setShowDetails] = useState(false);
     const [calculatedValues, setCalculatedValues] = useState(null);
+    const [focalMultiplier, setFocalMultiplier] = useState(1);
+
     
 
     const [selectedCelestial, setSelectedCelestial] = useState(null);
@@ -122,6 +124,10 @@ const App = () => {
             border: "1px solid white",
             boxShadow: "none",
             "&:hover": { borderColor: "gray" },
+        }),
+         input: (provided) => ({
+        ...provided,
+        color: "white", // ✅ Typing text will be visible
         }),
         menu: (provided) => ({
             ...provided,
@@ -235,15 +241,15 @@ const App = () => {
         {selectedTelescope && (
             <div className="equipment-box">
                 <h4>Telescope: {selectedTelescope.telescope_name}</h4>
-                <p><strong>Aperture:</strong> <span className="telescope-value">{selectedTelescope.aperture} </span></p>
-                <p><strong>Focal Length:</strong> <span className="telescope-value">{selectedTelescope.focal_length} </span></p>
+                <p><strong>Aperture:</strong> <span className="telescope-value">{selectedTelescope.aperture}mm </span></p>
+                <p><strong>Focal Length:</strong> <span className="telescope-value">{selectedTelescope.focal_length}mm </span></p>
             </div>
         )}
 
         {configType === "Eyepiece" && selectedEyepiece && (
             <div className="equipment-box">
                 <h4>Eyepiece: {selectedEyepiece.eyepiece_name}</h4>
-                <p><strong>Focal Length:</strong> <span className="eyepiece-value">{selectedEyepiece.eyepiece_focal_length} </span></p>
+                <p><strong>Focal Length:</strong> <span className="eyepiece-value">{selectedEyepiece.eyepiece_focal_length}mm </span></p>
                 <p><strong>Field of View:</strong> <span className="eyepiece-value">{selectedEyepiece.AFOV}°</span></p>
             </div>
         )}
@@ -256,11 +262,35 @@ const App = () => {
                 <p><strong>Sensor Size:</strong> <span className="camera-value">{selectedCamera.sensor_size.width} x {selectedCamera.sensor_size.height} mm</span></p>
             </div>
         )}
+        
+      <div style={{ margin: "1rem 0" }}>
+  <p><strong>Focal Length Multiplier:</strong></p>
+  {[0.5, 0.75, 1, 1.5, 2].map((multiplier) => (
+    <button
+      key={multiplier}
+      onClick={() => setFocalMultiplier(multiplier)}
+      style={{
+        marginRight: "10px",
+        padding: "8px 16px",
+        backgroundColor: focalMultiplier === multiplier ? "#4CAF50" : "#333",
+        color: "white",
+        border: "1px solid white",
+        borderRadius: "5px",
+        cursor: "pointer",
+      }}
+    >
+      {multiplier}x
+    </button>
+  ))}
+</div>
+
+
 
         <button
             onClick={() => {
                 console.log("⚡ Button Clicked! Starting Calculation...");
-                setCalculatedValues(calculateParameters(selectedTelescope, selectedEyepiece, selectedCamera));
+                setCalculatedValues(calculateParameters(selectedTelescope, selectedEyepiece, selectedCamera, focalMultiplier));
+
             }}
             className="calculate-button"
         >
@@ -331,6 +361,7 @@ const App = () => {
                 eyepiece={selectedEyepiece}
                 camera={selectedCamera}
                 celestialBody={selectedCelestial}
+                focalMultiplier={focalMultiplier}
               />
             </div>
           )}
