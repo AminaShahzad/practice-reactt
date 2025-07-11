@@ -2,16 +2,17 @@ import React, { useEffect, useState } from "react";
 import angularSizes from "./utils/angularSizes";
 import planetImages from "./planetImages";
 import SuggestedTelescopes from "./components/SuggestedTelescopes";
-import telescopes from "./utils/telescopeDatabase";
 import getRecommendedTelescopes from "./utils/getRecommendedTelescopes";
 
 
 
 
-const Simulator = ({ telescope, eyepiece, camera, celestialBody }) => {
+const Simulator = ({ telescope, eyepiece, camera, celestialBody, focalMultiplier = 1 }) => {
+
   const [angularSize, setAngularSize] = useState(0.01);
 
-  const focalLength = Number(telescope?.focal_length) || 1;
+  const focalLength = (Number(telescope?.focal_length) || 1) * focalMultiplier;
+
 
   // Eyepiece or camera FoV
   const afov = eyepiece ? Number(eyepiece.AFOV) || 50 : 50;
@@ -27,7 +28,7 @@ const Simulator = ({ telescope, eyepiece, camera, celestialBody }) => {
     if (data) {
       setAngularSize(data.angularSize);
     }
-  }, [celestialBody]);
+  }, [celestialBody, focalMultiplier]);
 
   const frameSize = 300; // px
   const scaleRatio = angularSize / finalFoV;
@@ -41,6 +42,8 @@ const Simulator = ({ telescope, eyepiece, camera, celestialBody }) => {
       </h2>
       <p>Angular Size: {angularSize.toFixed(4)}°</p>
       <p>Simulated Field of View: {finalFoV.toFixed(2)}°</p>
+      <p>Current Focal Multiplier: {focalMultiplier}x</p>
+
 
       <div
         style={{
