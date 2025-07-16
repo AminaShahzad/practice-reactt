@@ -7,6 +7,8 @@ import visual from "./vis.jpg";
 import image from "./imag.jpg";
 import { calculateParameters } from "./calculation"; // Import function
 import Simulator from "./simulator.jsx";
+import { useNavigate } from "react-router-dom";
+
 
 const App = () => {
     const [telescopes, setTelescopes] = useState([]);
@@ -23,12 +25,13 @@ const App = () => {
     const [isSliding, setIsSliding] = useState(true);
     const [showDetails, setShowDetails] = useState(false);
     const [calculatedValues, setCalculatedValues] = useState(null);
-    const [imageUrl, setImageUrl] = useState(null);
-    const [showCelestialSelection, setShowCelestialSelection] = useState(false);
+    const [focalMultiplier, setFocalMultiplier] = useState(1);
+
+    
+
     const [selectedCelestial, setSelectedCelestial] = useState(null);
     const [simulate, setSimulate] = useState(false);
-    const [showSimulator, setShowSimulator] = useState(false);
-    const [latestImage, setLatestImage] = useState(null);
+
 
 
 
@@ -68,7 +71,11 @@ const App = () => {
     
    
 
-    
+    const handleLearnMoreClick = () => {
+    navigate("/learnmore");
+  };
+    const navigate = useNavigate();
+
     const handleBack = () => {
         setError(""); // Clear errors when going back
         if (configType) {
@@ -118,6 +125,10 @@ const App = () => {
             boxShadow: "none",
             "&:hover": { borderColor: "gray" },
         }),
+         input: (provided) => ({
+        ...provided,
+        color: "white", // ✅ Typing text will be visible
+        }),
         menu: (provided) => ({
             ...provided,
             backgroundColor: "black",
@@ -143,13 +154,13 @@ const App = () => {
     return (
         <div className="app">
             <header className={`header ${isSliding ? "slide" : ""}`}>
-                <h1>TELESCOPIC VIEWS LIVE!</h1>
+                <h1>Real-Time Celestial Viewing</h1>
             </header>
     
             {/* Navbar */}
             <nav className="navbar">
-                <button onClick={() => setActivePanel("config")}>Configuration</button>
-                <button onClick={() => setActivePanel("learnmore")}>Learn More</button>
+                <button onClick={() => {setActivePanel("config"); handleBack();}}>Configuration</button>
+                <button onClick={() => {setActivePanel("learnmore");handleLearnMoreClick();}}>Learn More</button>
             </nav>
     
             {/* Configuration Panel */}
@@ -157,9 +168,7 @@ const App = () => {
                 <div className="config-panel">
                     {!configType ? (
                         <div className="main-config">
-                            <button className="back-button" onClick={handleBack}>
-                                <FaArrowLeft />
-                            </button>
+                          
                             <h2>Make your choice</h2>
     
                             <button onClick={() => setConfigType("Eyepiece")} className="config-button">
@@ -194,7 +203,7 @@ const App = () => {
                                 <>
                                     <label>Select Eyepiece:</label>
                                     <Select
-                                        options={eyepieces.map(e => ({ value: e.eyepiece_name, label: `${e.eyepiece_name}mm` }))}
+                                        options={eyepieces.map(e => ({ value: e.eyepiece_name, label: `${e.eyepiece_name}` }))}
                                         onChange={(option) => {setSelectedEyepiece(eyepieces.find(e => e.eyepiece_name === option.value));setShowDetails(false);
                                     setCalculatedValues(false);}}
                                         isLoading={loading}
@@ -232,15 +241,15 @@ const App = () => {
         {selectedTelescope && (
             <div className="equipment-box">
                 <h4>Telescope: {selectedTelescope.telescope_name}</h4>
-                <p><strong>Aperture:</strong> <span className="telescope-value">{selectedTelescope.aperture} mm</span></p>
-                <p><strong>Focal Length:</strong> <span className="telescope-value">{selectedTelescope.focal_length} mm</span></p>
+                <p><strong>Aperture:</strong> <span className="telescope-value">{selectedTelescope.aperture}mm </span></p>
+                <p><strong>Focal Length:</strong> <span className="telescope-value">{selectedTelescope.focal_length}mm </span></p>
             </div>
         )}
 
         {configType === "Eyepiece" && selectedEyepiece && (
             <div className="equipment-box">
                 <h4>Eyepiece: {selectedEyepiece.eyepiece_name}</h4>
-                <p><strong>Focal Length:</strong> <span className="eyepiece-value">{selectedEyepiece.eyepiece_focal_length} mm</span></p>
+                <p><strong>Focal Length:</strong> <span className="eyepiece-value">{selectedEyepiece.eyepiece_focal_length}mm </span></p>
                 <p><strong>Field of View:</strong> <span className="eyepiece-value">{selectedEyepiece.AFOV}°</span></p>
             </div>
         )}
@@ -253,11 +262,35 @@ const App = () => {
                 <p><strong>Sensor Size:</strong> <span className="camera-value">{selectedCamera.sensor_size.width} x {selectedCamera.sensor_size.height} mm</span></p>
             </div>
         )}
+        
+      <div style={{ margin: "1rem 0" }}>
+  <p><strong>Focal Length Multiplier:</strong></p>
+  {[0.5, 0.75, 1, 1.5, 2].map((multiplier) => (
+    <button
+      key={multiplier}
+      onClick={() => setFocalMultiplier(multiplier)}
+      style={{
+        marginRight: "10px",
+        padding: "8px 16px",
+        backgroundColor: focalMultiplier === multiplier ? "#4CAF50" : "#333",
+        color: "white",
+        border: "1px solid white",
+        borderRadius: "5px",
+        cursor: "pointer",
+      }}
+    >
+      {multiplier}x
+    </button>
+  ))}
+</div>
+
+
 
         <button
             onClick={() => {
                 console.log("⚡ Button Clicked! Starting Calculation...");
-                setCalculatedValues(calculateParameters(selectedTelescope, selectedEyepiece, selectedCamera));
+                setCalculatedValues(calculateParameters(selectedTelescope, selectedEyepiece, selectedCamera, focalMultiplier));
+
             }}
             className="calculate-button"
         >
@@ -293,9 +326,8 @@ const App = () => {
     {calculatedValues && (
         <div className="simulation-section">
           <div className="celestial-container">
-            <label className="choose-celestial-button">
-              Choose Celestial Body
-            </label>
+            <p className="choose-celestial-label">Choose Celestial Body</p>
+
 
             <Select
               options={[
@@ -310,6 +342,7 @@ const App = () => {
                 { value: "sun", label: "Sun" }
               ]}
               onChange={(option) => setSelectedCelestial(option.value)}
+              styles={customStyles}
               className="select-dropdown"
             />
 
@@ -328,6 +361,7 @@ const App = () => {
                 eyepiece={selectedEyepiece}
                 camera={selectedCamera}
                 celestialBody={selectedCelestial}
+                focalMultiplier={focalMultiplier}
               />
             </div>
           )}

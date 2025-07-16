@@ -1,8 +1,10 @@
-export const calculateParameters = (telescope, eyepiece, camera) => {
+export const calculateParameters = (telescope, eyepiece, camera, focalMultiplier = 1) => {
+ 
     if (!telescope) return null;
 
     const aperture = Number(telescope.aperture) || 1; // Prevents division by zero
-    const focalLength = Number(telescope.focal_length) || 1;
+    const focalLength = (Number(telescope.focal_length) || 1) * focalMultiplier;
+
 
     const eyepieceFocalLength = eyepiece ? Number(eyepiece.eyepiece_focal_length) || 1 : null;
     const afov = eyepiece ? Number(eyepiece.AFOV) || 0 : null;
@@ -40,9 +42,9 @@ export const calculateParameters = (telescope, eyepiece, camera) => {
 
         // Suitability Conditions
         if (ccdResolution > 2) {
-            ccdSuitability = "Under-sampling (Resolution too high)";
+            ccdSuitability = "Under-sampling (Resolution too low)";
         } else if (ccdResolution < 0.67) {
-            ccdSuitability = "Over-sampling (Resolution too low)";
+            ccdSuitability = "Over-sampling (Resolution too high)";
         } else {
             ccdSuitability = "Optimal (Good resolution)";
         }
